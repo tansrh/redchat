@@ -5,7 +5,7 @@ const { Server } = require('socket.io');
 require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: 'https://redchatio.onrender.com/' } });
+const io = new Server(server, { cors: { origin: 'https://redchatio.onrender.com' } });
 
 const redis_url = process.env.REDIS_URL;
 const redis_pub = createClient({ url: redis_url });
