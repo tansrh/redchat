@@ -27,8 +27,8 @@ const redis_sub = createClient({ url: redis_url });
   // Handler for all room messages
   const handleRoomMessage = (message, channel) => {
     try {
-      const { message: msg, sender } = JSON.parse(message);
-      io.to(channel).emit('chat_message', { room: channel, message: msg, sender });
+      const { message: msg, sender, senderId } = JSON.parse(message);
+      io.to(channel).emit('chat_message', { room: channel, message: msg, sender, senderId });
       console.log(`Message received in room ${channel}: ${msg} (by ${sender})`);
     } catch (e) {
       console.error('Failed to parse message:', message, e);
@@ -57,10 +57,10 @@ const redis_sub = createClient({ url: redis_url });
       }
     });
 
-    socket.on('chat_message', ({ room, message, sender }) => {
+    socket.on('chat_message', ({ room, message, sender, senderId }) => {
       // Publish to the room's Redis channel
       console.log(`Publishing message to room ${room}: ${message}`);
-      redis_pub.publish(room, JSON.stringify({ message, sender }));
+      redis_pub.publish(room, JSON.stringify({ message, sender, senderId }));
     });
 
     async function leaveRoom(room_name) {
